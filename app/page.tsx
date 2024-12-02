@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource";
-import { myFirstFunction } from "@/amplify/my-first-function/resource";
 import "./../app/app.css";
 import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
@@ -34,7 +33,7 @@ export default function App() {
   }, []);
 
   async function callMyFirstFunction() {
-    const response = await myFirstFunction();
+    const response = { message: "hello world!" };
     setResponseMessage(response.message);
   }
 
