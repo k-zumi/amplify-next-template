@@ -26,16 +26,34 @@ export default function SamplePage() {
 
   const addFaq = async () => {
     if (newQuestion && newAnswer) {
-      await client.models.FAQ.create({
-        question: newQuestion,
-        answer: newAnswer,
+      await fetch("/api/faqs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question: newQuestion, answer: newAnswer }),
       });
       setNewQuestion("");
       setNewAnswer("");
       // FAQリストを再取得
-      const { data } = await client.models.FAQ.list();
+      const response = await fetch("/api/faqs");
+      const data = await response.json();
       setFaqs(data);
     }
+  };
+
+  const deleteFaq = async (faqId: string) => {
+    await fetch("/api/faqs", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: faqId }), // idを使用して削除
+    });
+    // FAQリストを再取得
+    const response = await fetch("/api/faqs");
+    const data = await response.json();
+    setFaqs(data);
   };
 
   return (
@@ -67,6 +85,13 @@ export default function SamplePage() {
         {faqs.map((faq) => (
           <li key={faq.question} className="mb-2">
             <strong>{faq.question}</strong>: {faq.answer}
+            <button
+              onClick={async () => {
+                await deleteFaq(faq.id); // 削除処理を呼び出し
+              }}
+              className="ml-2 bg-red-500 text-white p-1 rounded hover:bg-red-600">
+              削除
+            </button>
           </li>
         ))}
       </ul>
